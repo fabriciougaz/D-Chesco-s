@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chesco's - Menú Restaurante</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #e74c3c;
+            --secondary-color: #3498db;
+            --background-color: #f4f4f4;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+        .menu-container {
+            width: 95%;
+            max-width: 1100px;
+            margin: 20px auto;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .menu-header {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .menu-header-logo {
+            width: 100px;
+            height: 100px;
+            margin-right: 20px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .menu-header-text {
+            display: flex;
+            flex-direction: column;
+        }
+        .menu-header h1 {
+            font-size: 2em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .menu-tabs {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            background-color: #f8f9fa;
+            padding: 10px;
+        }
+        .menu-tab {
+            margin: 5px 10px;
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--primary-color);
+            transition: color 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .menu-tab:hover {
+            color: var(--secondary-color);
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+        .menu-section {
+            display: none;
+            padding: 20px;
+            animation: fadeIn 0.5s ease;
+            justify-content: center;
+            flex-wrap: wrap;
+            background-color: white;
+            gap: 20px;
+        }
+        .menu-section.active {
+            display: flex;
+        }
+        .menu-item {
+            flex-basis: calc(33.333% - 20px);  
+            margin: 0;
+            max-width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            background-color: white;
+            border: 1px solid #f4f4f4;
+            border-radius: 10px;
+            padding: 15px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .menu-item:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .menu-item-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .menu-item-details {
+            flex-grow: 1;
+            min-width: 200px;
+        }
+        .menu-item-name {
+            font-size: 1.1em;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        .menu-item-description {
+            color: #666;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+        .menu-item-price {
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @media screen and (max-width: 768px) {
+            .menu-container {
+                width: 98%;
+                margin: 10px auto;
+            }
+            .menu-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .menu-header-logo {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            .menu-header h1 {
+                font-size: 1.5em;
+            }
+            .menu-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+            .menu-tab {
+                margin: 5px 0;
+                width: 80%;
+                text-align: center;
+            }
+            .menu-item {
+                flex-basis: calc(50% - 20px);
+            }
+        }
+        
+        @media screen and (max-width: 480px) {
+            .menu-container {
+                width: 100%;
+                margin: 0;
+                border-radius: 0;
+            }
+            .menu-item-image {
+                width: 80px;
+                height: 80px;
+            }
+            .menu-header {
+                padding: 15px;
+            }
+            .menu-section {
+                padding: 10px;
+            }
+            .menu-item {
+                flex-basis: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="menu-container">
+        <div class="menu-header">
+            <img src="imageness/Logo.jpg" alt="Chesco's Logo" class="menu-header-logo">
+            <div class="menu-header-text">
+                <h1>Chesco's</h1>
+                <p>Experiencia De Sabor Único</p>
+            </div>
+        </div>
+
+        <div class="menu-tabs">
+            <div class="menu-tab" onclick="showSection('desayunos')">Desayunos</div>
+            <div class="menu-tab" onclick="showSection('noche')">Noche</div>
+            <div class="menu-tab" onclick="showSection('bebidas')">Bebidas</div>
+            <div class="menu-tab" onclick="showSection('cocteles')">Cócteles</div>
+            <div class="menu-tab" onclick="showSection('hamburguesas')">Hamburguesas</div>
+            <div class="menu-tab" onclick="showSection('adicionales')">Adicionales</div>
+        </div>
+
+        <div id="desayunos" class="menu-section active">
+            <div class="menu-item">
+                <img src="imageness/4.png" alt="batido de fresa" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Batido de Fresa</h3>
+                    <p class="menu-item-description">Leche con fresa</p>
+                    <span class="menu-item-price">$5.50</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/5.png" alt="batido de lúcuma" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Batido de Lúcuma</h3>
+                    <p class="menu-item-description">leche con lúcuma</p>
+                    <span class="menu-item-price">$5.50</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/6.png" alt="batido de chocolate" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Batido de Chocolate</h3>
+                    <p class="menu-item-description">Leche con chocolate</p>
+                    <span class="menu-item-price">$5.50</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/7.png" alt="batido de platano" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Batido de Platano</h3>
+                    <p class="menu-item-description">Leche con platano</p>
+                    <span class="menu-item-price">$5.50</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/8.png" alt="jugo surtido" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Jugo Surtido</h3>
+                    <p class="menu-item-description">Variedad de frutas de acuerda a la estación</p>
+                    <span class="menu-item-price">$4.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/9.png" alt="jugo de papaya" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Jugo de Papaya</h3>
+                    <p class="menu-item-description">Papaya fresca</p>
+                    <span class="menu-item-price">$4.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/10.png" alt="jugo de piña" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Jugo de Piña</h3>
+                    <p class="menu-item-description">Piña fresca</p>
+                    <span class="menu-item-price">$4.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/11.png" alt="cafe estilado" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Café Estilado</h3>
+                    <p class="menu-item-description"></p>
+                    <span class="menu-item-price">$4.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/12.png" alt="infuciones" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Infuciones</h3>
+                    <p class="menu-item-description">Té, Manzanilla, Anis</p>
+                    <span class="menu-item-price">$2.50</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/13.png" alt="pan con chicharrón" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Pan con Chicharron</h3>
+                    <p class="menu-item-description">Pan, chicharron de cerdo, camonete y salsa criolla</p>
+                    <span class="menu-item-price">$5.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/14.jpg" alt="pan con lomo" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Pan con Lomo</h3>
+                    <p class="menu-item-description">Pan, lomo de res y papas fritas</p>
+                    <span class="menu-item-price">$5.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/15.jpg" alt="pan con pollo" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Pan con Pollo</h3>
+                    <p class="menu-item-description">Pan, pollo desmenusado y papas alilo</p>
+                    <span class="menu-item-price">$3.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/16.jpg" alt="pan con asado" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Pan con Asado</h3>
+                    <p class="menu-item-description">Pan, lechuga, asado de res y salsa criolla</p>
+                    <span class="menu-item-price">$5.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/17.jpg" alt="pan con huevo y hot dog" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Pan con Huevo y Hot dog</h3>
+                    <p class="menu-item-description">Pan, huevo frito y hot dog</p>
+                    <span class="menu-item-price">$3.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/Simple.jpg" alt="hamburguesa" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Hamburguesa</h3>
+                    <p class="menu-item-description">Pan, carne de hamburguesa, ensalada y papas fritas o alilo</p>
+                    <span class="menu-item-price">$5.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/19.jpg" alt="choripan" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Choripan</h3>
+                    <p class="menu-item-description">Pan, chorizo y papas alilo</p>
+                    <span class="menu-item-price">$5.00</span>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div id="noche" class="menu-section">
+            <div class="menu-item">
+                <img src="imageness/22.jpg" alt="alitas" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Alitas BBQ</h3>
+                    <p class="menu-item-description">Porción personal: 6 piezas de alitas, papas fritas y ensalada</p>
+                    <span class="menu-item-price">$15.0</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/21.jpg" alt="alitas" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Alitas Búfalo</h3>
+                    <p class="menu-item-description">Porción personal: 6 piezas de alitas, papas fritas y ensalada</p>
+                    <span class="menu-item-price">$15.0</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/20.jpg" alt="alitas" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Alitas Acevichadas</h3>
+                    <p class="menu-item-description">Porción personal: 6 piezas de alitas, papas fritas y ensalada</p>
+                    <span class="menu-item-price">$15.0</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/25.jpg" alt="alitas" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Alitas en salsa Maracuya</h3>
+                    <p class="menu-item-description">Porción personal: 6 piezas de alitas, papas fritas y ensalada</p>
+                    <span class="menu-item-price">$15.0</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/23.jpg" alt="alitas" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Alitas Broaster</h3>
+                    <p class="menu-item-description">Porción personal: 6 piezas de alitas, papas fritas y ensalada</p>
+                    <span class="menu-item-price">$15.0</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/24.jpg" alt="alitas" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Alitas Parrilleras</h3>
+                    <p class="menu-item-description">Porción personal: 6 piezas de alitas, papas fritas y ensalada</p>
+                    <span class="menu-item-price">$15.0</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/26.jpg" alt="alitas" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Alitas D' Chesco's</h3>
+                    <p class="menu-item-description">12 piezas de alitas con 4 sabores de salsa distintos, papas fritas y ensalada</p>
+                    <span class="menu-item-price">$30.0</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/27.jpg" alt="parrillas" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Parrilla de Cerdo</h3>
+                    <p class="menu-item-description">Carne de Cerdo, papas fritas y ensalada</p>
+                    <span class="menu-item-price">$18.0</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/28.jpg" alt="parrillas" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Parrilla de Res</h3>
+                    <p class="menu-item-description">Carne de Res, papas fritas y ensalada</p>
+                    <span class="menu-item-price">$18.0</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/29.jpg" alt="parrillas" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Parrilla de Pollo</h3>
+                    <p class="menu-item-description">Carne de Pollo, papas fritas y ensalada</p>
+                    <span class="menu-item-price">$18.0</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/30.jpg" alt="lomo" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Lomo saltado</h3>
+                    <p class="menu-item-description">Carne, arroz y papas fritas</p>
+                    <span class="menu-item-price">$15.0</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/31.jpg" alt="lomo" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Lomo saltado a lo pobre</h3>
+                    <p class="menu-item-description">Carne, arroz, papas fritas, huevo y plátano frito</p>
+                    <span class="menu-item-price">$17.0</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/32.jpg" alt="milanesa" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Milanesa</h3>
+                    <p class="menu-item-description">Milanesa, arroz, papas fritas y ensalada</p>
+                    <span class="menu-item-price">$12.0</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/33.jpg" alt="chicharron" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Chicharron de Pollo</h3>
+                    <p class="menu-item-description">Chicharron de Pollo, arroz, papas fritas y ensalada </p>
+                    <span class="menu-item-price">$11.0</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/34.jpg" alt="broaster" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Broaster</h3>
+                    <p class="menu-item-description">Pollo broaster, arroz, papas fritas y ensalada </p>
+                    <span class="menu-item-price">$10.0</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/35.jpg" alt="salchipapa" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Salchipapa Simple</h3>
+                    <p class="menu-item-description">Papas fritas y hot dog</p>
+                    <span class="menu-item-price">$7.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/36.jpg" alt="salchipapa" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Salchipapa Royal</h3>
+                    <p class="menu-item-description">Papas fritas, hot dog y huevo frito</p>
+                    <span class="menu-item-price">$8.00</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="bebidas" class="menu-section">
+            <div class="menu-item">
+                <img src="imageness/49.jpg" alt="limonada simple" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">1/2 Litro de Limonada Simple</h3>
+                    <p class="menu-item-description">Sumo de limon, agua y azucar</p>
+                    <span class="menu-item-price">$5.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/50.jpg" alt="limonada simple" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">1 Litro de Limonada Simple</h3>
+                    <p class="menu-item-description">Sumo de limon, agua y azucar</p>
+                    <span class="menu-item-price">$8.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/51.jpg" alt="limonada frozen" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">1 Litro de Limonada Frozen</h3>
+                    <p class="menu-item-description">limon, agua y azucar</p>
+                    <span class="menu-item-price">$8.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/48.jpg" alt="chicha morada" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">1/2 Litro de Chicha Morada</h3>
+                    <p class="menu-item-description">Maiz morado, sumo de limon, agua y azucar</p>
+                    <span class="menu-item-price">$5.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/58.jpg" alt="chicha morada" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">1 Litro de Chicha Morada</h3>
+                    <p class="menu-item-description">Maiz morado, sumo de limon, agua y azucar</p>
+                    <span class="menu-item-price">$8.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/52.jpg" alt="gaseosa" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Gaseosa de 1/2 Litro</h3>
+                    <p class="menu-item-description">Coca cola y Inka cola</p>
+                    <span class="menu-item-price">$3.50</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/54.jpg" alt="gaseosa" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Gaseosa de 1 Litro</h3>
+                    <p class="menu-item-description">Coca cola y Inka cola</p>
+                    <span class="menu-item-price">$6.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/56.jpg" alt="gaseosa" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Gaseosa de 2 Litro</h3>
+                    <p class="menu-item-description">Coca cola y Inka cola</p>
+                    <span class="menu-item-price">$9.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/55.jpg" alt="hit" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Hit Personal</h3>
+                    <p class="menu-item-description">Distintos sabores</p>
+                    <span class="menu-item-price">$7.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/53.jpg" alt="vino" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Botella de vino</h3>
+                    <p class="menu-item-description">Vino rose</p>
+                    <span class="menu-item-price">$20.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/57.jpg" alt="cerveza" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Cerveza Personal</h3>
+                    <p class="menu-item-description">Pilse Trujillo y Callao</p>
+                    <span class="menu-item-price">$5.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/11.png" alt="cafe estilado" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Café Estilado</h3>
+                    <p class="menu-item-description"></p>
+                    <span class="menu-item-price">$4.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/12.png" alt="infuciones" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Infuciones</h3>
+                    <p class="menu-item-description">Té, Manzanilla, Anis</p>
+                    <span class="menu-item-price">$3.00</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="cocteles" class="menu-section">
+            <div class="menu-item">
+                <img src="imageness/37.jpg" alt="laguna azul" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Laguna Azul</h3>
+                    <p class="menu-item-description">Vodka, licor blue curacao, sumo de limon y sprite</p>
+                    <span class="menu-item-price">$7.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/3.jpg" alt="mojito" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Mojito</h3>
+                    <p class="menu-item-description">Ron blanco, hierba buena, sumo de limon, azúcar y agua mineral</p>
+                    <span class="menu-item-price">$7.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/2.jpg" alt="chilcano" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Chilcano Clasico</h3>
+                    <p class="menu-item-description">Pisco, sumo de limón, everves y amoargo de angostura</p>
+                    <span class="menu-item-price">$7.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/38.jpg" alt="chilcano" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Chilcano Maracuya</h3>
+                    <p class="menu-item-description">Pisco, sumo de limon, sumo de maracuya , jarabe de goma y everves</p>
+                    <span class="menu-item-price">$7.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/39.jpg" alt="sangría" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Sangría</h3>
+                    <p class="menu-item-description">Vino tinto, frutas, licor de naranja</p>
+                    <span class="menu-item-price">$18.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/40.jpg" alt="barbaros" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Barbaros</h3>
+                    <p class="menu-item-description">Pisco, blue curacao, jugo de naranja y jarabe de granadina</p>
+                    <span class="menu-item-price">$7.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/1.jpg" alt="machupichu" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Machupichu</h3>
+                    <p class="menu-item-description">Pisco, licor de menta, jarabe de granadina y jugo de naranja</p>
+                    <span class="menu-item-price">$7.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/41.jpg" alt="amor en llamas" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Amor en Llamas</h3>
+                    <p class="menu-item-description">Pisco, Vodka, ron blanco, jugo de naranja y garabe de granadina</p>
+                    <span class="menu-item-price">$12.00</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="hamburguesas" class="menu-section">
+            <div class="menu-item">
+                <img src="imageness/Simple.jpg" alt="hamburguesa" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Hamburguesa Clasica</h3>
+                    <p class="menu-item-description">Carne, papas fritas y ensalada</p>
+                    <span class="menu-item-price">$4.50</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/royal.jpg" alt="hamburguesa" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Hamburguesa Royal</h3>
+                    <p class="menu-item-description">Carne, papas fritas, huevo frito y ensalada</p>
+                    <span class="menu-item-price">$5.50</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/42.jpg" alt="hamburguesa" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Hamburguesa cheeseburguer</h3>
+                    <p class="menu-item-description">Carne, papas fritas, huevo frito, queso y ensalada</p>
+                    <span class="menu-item-price">$7.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/hamburbroaster.jpg" alt="hamburguesa" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Hamburbroaster</h3>
+                    <p class="menu-item-description">broaster, papas fritas y ensalada</p>
+                    <span class="menu-item-price">$8.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/19.jpg" alt="hamburguesa" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Choripan</h3>
+                    <p class="menu-item-description">Chorizo, papas fritas y ensalada</p>
+                    <span class="menu-item-price">$5.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/chorihuevo.jpg" alt="hamburguesa" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Chorihuevo</h3>
+                    <p class="menu-item-description">Chorizo, papas fritas, huevo frito y ensalada</p>
+                    <span class="menu-item-price">$5.50</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/mata hambre.png" alt="hamburguesa" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Mata Hambre</h3>
+                    <p class="menu-item-description">Carne, queso, tocino, chorizo, huevo frito y ensalada</p>
+                    <span class="menu-item-price">$10.50</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="adicionales" class="menu-section">
+            <div class="menu-item">
+                <img src="imageness/44.jpg" alt="adiconal" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Adicional Huevo frito</h3>
+                    <p class="menu-item-description">Huevo frito bien cocinado</p>
+                    <span class="menu-item-price">$1.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/43.jpg" alt="adiconal" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Adicional de papas fritas</h3>
+                    <p class="menu-item-description">Porción de papas fritas</p>
+                    <span class="menu-item-price">$4.50</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/45.jpg" alt="adiconal" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Adicional Arroz</h3>
+                    <p class="menu-item-description">Porción de arroz</p>
+                    <span class="menu-item-price">$2.50</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/46.jpg" alt="adiconal" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Adicional ensalada</h3>
+                    <p class="menu-item-description">Porción de ensalada</p>
+                    <span class="menu-item-price">$4.00</span>
+                </div>
+            </div>
+            <div class="menu-item">
+                <img src="imageness/47.jpg" alt="adiconal" class="menu-item-image">
+                <div class="menu-item-details">
+                    <h3 class="menu-item-name">Adicional Chorizo</h3>
+                    <p class="menu-item-description">1 Chorizo Parrillero</p>
+                    <span class="menu-item-price">$3.00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+    <script>
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.menu-section');
+            const tabs = document.querySelectorAll('.menu-tab');
+            
+            sections.forEach(section => section.classList.remove('active'));
+            tabs.forEach(tab => {
+                tab.style.color = 'var(--primary-color)';
+                tab.style.backgroundColor = 'transparent';
+            });
+            
+            document.getElementById(sectionId).classList.add('active');
+            
+            event.target.style.color = 'var(--secondary-color)';
+            event.target.style.backgroundColor = 'rgba(52, 152, 219, 0.1)';
+        }
+    </script>
+</body>
+</html>
